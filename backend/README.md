@@ -35,3 +35,5 @@ pnpm test:bdd
 - linter biome
 
 **You can consider to setup a ci/cd process : describe the necessary actions in a few words**
+
+- you can find an example [here](../.github/workflows/test.yml)

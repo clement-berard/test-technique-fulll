@@ -1,0 +1,53 @@
+name: 🔍 Static Checks
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Build job
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4.1.0
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies with pnpm
+        run: pnpm install
+        working-directory: ./backend
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+
+      - name: Install dependencies
+        working-directory: backend
+        run: pnpm install
+
+      - name: Lint
+        working-directory: backend
+        run: pnpm lint:check
+
+      - name: BDD
+        working-directory: backend
+        run: pnpm test:bdd
