@@ -1,0 +1,8 @@
+default:
+  paths:
+    - "test/*.feature"
+  requireModule:
+    - tsx/cjs
+  require:
+    - "test/setup.ts"
+    - "test/step_definitions/*.ts"
