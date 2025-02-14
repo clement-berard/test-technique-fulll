@@ -13,7 +13,7 @@ export class Fleet {
 
   registerVehicle(plateNumber: string): void {
     if (this.vehicles.has(plateNumber)) {
-      throw new Error('This vehicle is already registered in the fleet');
+      throw new Error('This vehicle is already registered in this fleet');
     }
     this.vehicles.set(plateNumber, new Vehicle(plateNumber));
   }

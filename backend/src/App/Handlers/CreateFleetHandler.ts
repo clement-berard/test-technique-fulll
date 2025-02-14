@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import { v4 as uuidv4 } from 'uuid';
 import { Fleet } from '../../Domain/Fleet';
 import type { FleetRepositoryInterface } from '../../Infra/Repositories/Fleet/FleetRepositoryInterface';
 import type { CreateFleetCommand } from '../Commands/CreateFleetCommand';

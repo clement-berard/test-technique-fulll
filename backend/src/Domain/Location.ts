@@ -15,4 +15,8 @@ export class Location {
     this.longitude = longitude;
     this.altitude = altitude;
   }
+
+  public equals(other: Location): boolean {
+    return this.latitude === other.latitude && this.longitude === other.longitude && this.altitude === other.altitude;
+  }
 }
