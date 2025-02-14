@@ -6,3 +6,14 @@ default:
   require:
     - "test/setup.ts"
     - "test/step_definitions/*.ts"
+  tags: "not @critical"
+
+critical:
+  paths:
+    - "test/*.feature"
+  requireModule:
+    - tsx/cjs
+  require:
+    - "test/setup.ts"
+    - "test/step_definitions/*.ts"
+  tags: "@critical"

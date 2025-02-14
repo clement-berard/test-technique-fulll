@@ -1,3 +1,4 @@
+// see "Improvement Points" in README.md
 import assert from 'node:assert';
 import { Given, Then, When } from '@cucumber/cucumber';
 import { CreateFleetCommand } from '../../src/App/Commands/CreateFleetCommand';
@@ -6,10 +7,12 @@ import { RegisterVehicleCommand } from '../../src/App/Commands/RegisterVehicleCo
 import { RegisterVehicleHandler } from '../../src/App/Handlers/RegisterVehicleHandler';
 import { GetFleetQuery } from '../../src/App/Queries/GetFleetQuery';
 import { GetLocationVehicleQuery } from '../../src/App/Queries/GetLocationVehicleQuery';
+import type { Fleet } from '../../src/Domain/Fleet';
 import { Location } from '../../src/Domain/Location';
 import { Vehicle } from '../../src/Domain/Vehicle.js';
 
 let fleetId: string;
+let anotherFleet: Fleet;
 let location: Location;
 
 Given('my fleet', async function () {
@@ -25,6 +28,7 @@ Given('I register this vehicle into my fleet', async function () {
   const registerVehicleHandler = new RegisterVehicleHandler(this.fleetRepository, this.vehicleRepository);
   const command = new RegisterVehicleCommand(this.fleet.id, this.vehicle.plateNumber);
   await registerVehicleHandler.handle(command);
+  this.fleet = await this.getFleetHandler.handle(new GetFleetQuery(fleetId));
 });
 
 Then('this vehicle should be part of my vehicle fleet', async function () {
@@ -65,7 +69,8 @@ Then('the known location of my vehicle should verify this location', async funct
   const resolvedLocation = await this.getLocationVehicleHandler.handle(
     new GetLocationVehicleQuery(fleetId, this.vehicle.plateNumber),
   );
-  assert.strictEqual(resolvedLocation, location);
+
+  assert.ok(resolvedLocation.equals(location));
 });
 
 Given('my vehicle has been parked into this location', async function () {
@@ -83,4 +88,15 @@ When('I try to park my vehicle at this location', async function () {
 Then('I should be informed that my vehicle is already parked at this location', function () {
   assert.ok(this.error);
   assert.strictEqual(this.error.message, 'This vehicle is already parked at this location');
+});
+
+Given('the fleet of another user', async function () {
+  const fleetId = await this.createFleetHandler.handle(new CreateFleetCommand('otherUser'));
+  anotherFleet = await this.getFleetHandler.handle(new GetFleetQuery(fleetId));
+});
+
+Given("this vehicle has been registered into the other user's fleet", async function () {
+  const registerVehicleHandler = new RegisterVehicleHandler(this.fleetRepository, this.vehicleRepository);
+  const command = new RegisterVehicleCommand(anotherFleet.id, this.vehicle.plateNumber);
+  await registerVehicleHandler.handle(command);
 });

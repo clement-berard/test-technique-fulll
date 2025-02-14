@@ -13,7 +13,8 @@
     "format": "biome format",
     "lint": "biome lint",
     "lint:check": "biome check",
-    "test:bdd": "cucumber-js"
+    "test:bdd": "cucumber-js --profile default",
+    "test:bdd:critical": "cucumber-js --profile critical"
   },
   "keywords": [],
   "author": "",

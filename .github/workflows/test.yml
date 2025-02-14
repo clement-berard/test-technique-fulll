@@ -39,7 +39,6 @@ jobs:
           cache: pnpm
           cache-dependency-path: backend/pnpm-lock.yaml
 
-
       - name: Install dependencies
         working-directory: backend
         run: pnpm install
@@ -48,6 +47,10 @@ jobs:
         working-directory: backend
         run: pnpm lint:check
 
-      - name: BDD
+      - name: Run in-memory BDD tests (default profile)
         working-directory: backend
         run: pnpm test:bdd
+
+      - name: Run database BDD tests (critical profile)
+        working-directory: backend
+        run: pnpm test:bdd:critical
